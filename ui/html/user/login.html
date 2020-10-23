@@ -1,0 +1,22 @@
+{{template "layout" .}}
+
+{{define "body"}}
+<form action="/user/login" method="POST">
+    {{with .Errors.Get "generic"}}
+    <div>{{.}}</div>
+    {{end}}
+
+    <div>
+        <label>User:</label>
+        <input name="sn" type="text" value='{{.Get "sn"}}' />
+    </div>
+
+    <div>
+        <label>Password:</label>
+        <input name="password" type="password">
+    </div>
+
+    <input type="submit" value="Sign In" />
+</form>
+</div>
+{{end}}

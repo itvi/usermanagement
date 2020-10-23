@@ -1,0 +1,46 @@
+{{template "layout" .}}
+
+{{define "body"}}
+<h3>Sign Up</h3>
+<hr>
+<form action="/user/create" method="POST">
+    <div class="mb-3">
+        <label for="name">SN:</label>
+        <input id="sn" name="sn" type="text" value='{{.Get "sn"}}' required maxlength="8">
+        <div class="invalid-feedback">
+            Required,Max string length is 8!
+            {{with .Errors.Get "sn"}}
+            <span class="invalidate">{{.}}</span>
+            {{end}}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="name">Name:</label>
+        <input id="name" name="name" type="text" value='{{.Get "name"}}' required>
+        {{with .Errors.Get "name"}}
+        <span class="invalidate">{{.}}</span>
+        {{end}}
+    </div>
+
+    <div class="mb-3">
+        <label>Email:</label>
+        <input name="email" type="email" value='{{.Get "email"}}'>
+        {{with .Errors.Get "email"}}
+        <span class="invalidate">{{.}}</span>
+        {{end}}
+    </div>
+
+    <div class="mb-3">
+        <label>Password:</label>
+        <input name="password" type="password" required />
+        <div class="invalid-feedback">
+            {{with .Errors.Get "password"}}
+            <span class="invalidate">{{.}}</span>
+            {{end}}
+        </div>
+    </div>
+
+    <input type="submit" value="Sign Up" />
+</form>
+{{end}}

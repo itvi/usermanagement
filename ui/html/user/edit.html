@@ -1,0 +1,31 @@
+{{template "layout" .}}
+
+{{define "body"}}
+<form method="POST" action="/user/edit/{{.User.ID}}">
+    <div>
+        <label for="sn">SN</label>
+        <input id="sn" name="sn" type="text" value="{{.User.SN}}" readonly />
+        {{with .Form}}
+        <span class="invalidate">{{.Errors.Get "sn"}}</span>
+        {{end}}
+    </div>
+
+    <div>
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" value="{{.User.Name}}" maxlength="6">
+        {{with .Form}}
+        <span class="invalidate">{{.Errors.Get "name"}}</span>
+        {{end}}
+    </div>
+
+    <div>
+        <label for="name">Password</label>
+        <input id="psw" name="hashedPassword" type="password" value="{{.User.HashedPassword}}" maxlength="60">
+        {{with .Form}}
+        <span class="invalidate">{{.Errors.Get "hashedPassword"}}</span>
+        {{end}}
+    </div>
+
+    <input type="submit" value="Save" />
+</form>
+{{end}}

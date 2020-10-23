@@ -1,0 +1,28 @@
+{{template "layout" .}}
+
+{{define "body"}}
+<h1>Users</h1>
+<a href="/user/create">Add</a>
+{{ if .}}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>SN</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    {{range .}}
+    <tr>
+        <td><a href="/user/details/{{.ID}}">{{.ID}}</a></td>
+        <td>{{.SN}}</td>
+        <td>{{.Name}}</td>
+        <td><a href="/user/edit/{{.ID}}">Edit</a></td>
+        <td><a href="/user/delete/{{.ID}}">Delete</a></td>
+    </tr>
+    {{end}}
+</table>
+{{else}}
+<div>No data.</div>
+{{end}}
+{{end}}
