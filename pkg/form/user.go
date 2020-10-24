@@ -18,7 +18,7 @@ type UserForm struct {
 }
 
 // Init initialize a user form struct
-func Init(v url.Values) *UserForm {
+func (f *UserForm) Init(v url.Values) *UserForm {
 	return &UserForm{
 		v,
 		errors(map[string][]string{}),
@@ -57,7 +57,7 @@ func (f *UserForm) MinLength(field string, d int) {
 	}
 }
 
-// MatchesPattern match string with regexp
+// Match match string with regexp
 func (f *UserForm) Match(field string, pattern *regexp.Regexp) {
 	value := f.Get(field)
 	if value == "" {

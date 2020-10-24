@@ -54,7 +54,7 @@ func (h *UserHandler) create() http.HandlerFunc {
 
 			err = h.M.Create(userForm.Get("sn"), userForm.Get("name"),
 				userForm.Get("email"), userForm.Get("password"))
-			if err == sqlite.ErrDuplicate {
+			if err == model.ErrDuplicate {
 				userForm.Errors.Add("sn", "user already exist")
 				render(w, r, page, userForm)
 				return
@@ -81,7 +81,7 @@ func (h *UserHandler) edit() http.HandlerFunc {
 
 		if r.Method == "GET" {
 			user, err := h.M.GetUser(id)
-			if err == sqlite.ErrNoRecord {
+			if err == model.ErrNoRecord {
 				fmt.Fprint(w, "Not Found")
 				return
 			} else if err != nil {
@@ -171,7 +171,7 @@ func (h *UserHandler) login() http.HandlerFunc {
 
 			userForm := form.Init(r.PostForm)
 			user, err := h.M.Authenticate(userForm.Get("sn"), userForm.Get("password"))
-			if err == sqlite.ErrInvalidCredentials {
+			if err == model.ErrInvalidCredentials {
 				userForm.Errors.Add("generic", "User name or password is not correct!")
 				render(w, r, page, userForm)
 				return

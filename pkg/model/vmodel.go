@@ -11,3 +11,9 @@ type UserEditModel struct {
 	Form *form.UserForm
 	User User
 }
+
+// RoleEditModel ...
+type RoleEditModel struct {
+	Form *form.UserForm
+	Role Role
+}

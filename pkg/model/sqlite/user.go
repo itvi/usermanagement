@@ -2,22 +2,10 @@ package sqlite
 
 import (
 	"database/sql"
-	"errors"
 	"strings"
 	"umanagement/pkg/model"
 
 	"golang.org/x/crypto/bcrypt"
-)
-
-var (
-	// ErrNoRecord shows no record found
-	ErrNoRecord = errors.New("models: no matching record found")
-	// ErrInvalidCredentials will use this later if a user
-	// tries to login with an incorrect email address or password.
-	ErrInvalidCredentials = errors.New("models: invalid credentials")
-	// ErrDuplicate will use this later if a user
-	// tries to signup with an email address that's already in use.
-	ErrDuplicate = errors.New("models: duplicate user name")
 )
 
 // UserModel ...
@@ -58,7 +46,7 @@ VALUES(?,?,?,?)`
 	_, err = m.DB.Exec(stmt, sn, name, email, string(hashedPassword))
 	if err != nil {
 		if strings.Contains(err.Error(), "UNIQUE") {
-			return ErrDuplicate
+			return model.ErrDuplicate
 		}
 	}
 	return err
@@ -97,7 +85,7 @@ func (m *UserModel) GetUser(id int) (*model.User, error) {
 	row := m.DB.QueryRow(stmt, id)
 	err := row.Scan(&s.ID, &s.SN, &s.Name)
 	if err == sql.ErrNoRows {
-		return nil, ErrNoRecord
+		return nil, model.ErrNoRecord
 	} else if err != nil {
 		return nil, err
 	}
@@ -111,14 +99,14 @@ func (m *UserModel) Authenticate(sn, password string) (*model.User, error) {
 	row := m.DB.QueryRow(`SELECT id,hashed_password FROM user WHERE sn=?`, sn)
 	err := row.Scan(&user.ID, &user.HashedPassword)
 	if err == sql.ErrNoRows {
-		return nil, ErrInvalidCredentials
+		return nil, model.ErrInvalidCredentials
 	} else if err != nil {
 		return nil, err
 	}
 
 	err = bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password))
 	if err == bcrypt.ErrMismatchedHashAndPassword {
-		return nil, ErrInvalidCredentials
+		return nil, model.ErrInvalidCredentials
 	} else if err != nil {
 		return nil, err
 	}
