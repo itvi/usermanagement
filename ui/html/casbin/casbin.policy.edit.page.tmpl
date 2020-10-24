@@ -1,0 +1,97 @@
+{{template "layout" .}}
+{{define "title"}}Edit Policy{{end}}
+
+{{define "body"}}
+<div class="container">
+
+    <form action="" class="needs-validation" novalidate>
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+        <div class="row mb-2">
+            <label for="sub" class="col-sm-1 col-form-label">Sub</label>
+            <div class="col-sm">
+                <input type="text" name="sub" id="sub" value="{{.CasbinPolicy.Sub}}" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <label for="obj" class="col-sm-1 col-form-label">Obj</label>
+            <div class="col-sm">
+                <input type="text" name="obj" id="obj" value="{{.CasbinPolicy.Obj}}" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <label for="act" class="col-sm-1 col-form-label">Act</label>
+            <div class="col-sm">
+                <input type="text" name="act" id="act" value="{{.CasbinPolicy.Act}}" class="form-control" required>
+            </div>
+        </div>
+        <input type="submit" id="save" class="btn btn-primary offset-sm-1" value="Save">
+    </form>
+</div>
+{{end}}
+
+{{define "script"}}
+<script src="/static/js/site.js"></script>
+<script>
+    $('#save').click(function (e) {
+        //e.preventDefault();
+        var ref = document.referrer;
+
+        // form value
+        var sub = $('#sub').val();
+        var obj = $('#obj').val();
+        var act = $('#act').val();
+
+        if(sub.trim().length==0 || obj.trim().length==0||act.trim().length==0){
+            return;
+        }
+
+        // url value
+        var uSub = getUrlVars()['sub'];
+        var uObj = getUrlVars()['obj'];
+        var uAct = getUrlVars()['act'];
+
+        $.ajax({
+            url: '/casbin/policies/edit?sub=' + uSub + '&obj=' + uObj + '&act=' + uAct,
+            type: 'POST',
+            data: {
+                sub: sub,
+                obj: obj,
+                act: act,
+                csrf_token: '{{.CSRFToken}}',
+            },
+            success: function () {
+                // if (ref == "http://localhost:8080/casbin/administrator/policy") {
+                if (ref.indexOf(sub) > 0) {
+                    window.location.href = "/casbin/" + sub + "/policies";
+                } else {
+                    window.location.href = "/casbin/policies";
+                }
+            },
+            error: function (r) {
+                console.log(r)
+            }
+        });
+    });
+
+    // Self-executing function
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+{{end}}
