@@ -48,7 +48,7 @@ func (m *RoleModel) GetRoleByID(id int) (*model.Role, error) {
 }
 
 // CreateRole add a new role to database
-func (m *RoleModel) CreateRole(role *model.Role) error {
+func (m *RoleModel) Create(role *model.Role) error {
 	stmt, err := m.DB.Prepare("INSERT INTO role(name,description) VALUES(?,?)")
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func (m *RoleModel) CreateRole(role *model.Role) error {
 }
 
 // EditRole edit a current role
-func (m *RoleModel) EditRole(r *model.Role) error {
+func (m *RoleModel) Edit(r *model.Role) error {
 	q := "UPDATE role SET name=?,description=? WHERE id=?"
 	stmt, err := m.DB.Prepare(q)
 	if err != nil {
@@ -71,7 +71,7 @@ func (m *RoleModel) EditRole(r *model.Role) error {
 }
 
 // DeleteRole delete a role
-func (m *RoleModel) DeleteRole(id int) error {
+func (m *RoleModel) Delete(id int) error {
 	stmt, err := m.DB.Prepare("DELETE FROM role WHERE id=?")
 	if err != nil {
 		return err

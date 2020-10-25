@@ -23,35 +23,23 @@ func (h *RoleHandler) index() http.HandlerFunc {
 			log.Println(err)
 			return
 		}
-
+		log.Println(roles)
 		render(w, r, "./ui/html/role/index.html", roles)
 	}
 }
 
 func (h *RoleHandler) details() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		urlID := strings.TrimPrefix(r.URL.Path, "/role/details/")
-		id, err := strconv.Atoi(urlID)
-		if err != nil {
-			log.Println(err)
-			return
-		}
+		id := strings.TrimPrefix(r.URL.Path, "/role/details/")
 
-		role, err := h.M.GetRoleByID(id)
-		if err == model.ErrNoRecord {
-			log.Println(err)
-			return
-		} else if err != nil {
-			log.Println(err)
-			return
-		}
-		render(w, r, "./ui/html/role/details.html", role)
+		fmt.Fprintln(w, id)
 	}
 }
 
 func (h *RoleHandler) create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var page = "./ui/html/role/create.html"
+
 		if r.Method == "GET" {
 			render(w, r, page, form.Init(nil))
 		} else if r.Method == "POST" {
@@ -75,7 +63,7 @@ func (h *RoleHandler) create() http.HandlerFunc {
 			desc := form.Get("desc")
 
 			role := &model.Role{Name: name, Description: desc}
-			err = h.M.CreateRole(role)
+			err = h.M.Create(role)
 			if err != nil {
 				log.Println(err)
 				return
@@ -123,38 +111,39 @@ func (h *RoleHandler) edit() http.HandlerFunc {
 			role := &model.Role{ID: id, Name: name, Description: desc}
 
 			if !form.Valid() {
-				render(w, r, page, &templateData{
+				render(w, r, page, &model.RoleEditModel{
 					Form: form,
-					Role: role,
+					Role: *role,
 				})
 				return
 			}
 
-			err = h.M.EditRole(role)
+			err = h.M.Edit(role)
 			if err != nil {
-				config.App.serverError(w, err)
+				log.Println(err)
 				return
 			}
 
-			config.App.Session.Put(r, "flash", "更新成功")
 			http.Redirect(w, r, "/roles", http.StatusSeeOther)
 		}
 	}
 }
 
-func (h *RoleHandler) delete(config *Config) http.HandlerFunc {
+func (h *RoleHandler) delete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+		urlID := strings.TrimPrefix(r.URL.Path, "/role/delete/")
+		id, err := strconv.Atoi(urlID)
 		if err != nil {
-			config.App.notFound(w)
-			return
-		}
-		err = h.M.DeleteRole(id)
-		if err != nil {
-			config.App.serverError(w, err)
+			fmt.Fprint(w, "Not Found")
 			return
 		}
 
-		config.App.Session.Put(r, "flash", "删除成功")
+		err = h.M.Delete(id)
+		if err != nil {
+			fmt.Fprint(w, "Not Found")
+			return
+		}
+
+		http.Redirect(w, r, "/roles", http.StatusSeeOther)
 	}
 }
