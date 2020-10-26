@@ -11,6 +11,7 @@ type Application struct {
 type Handlers struct {
 	User *UserHandler
 	Role *RoleHandler
+	Home *HomeHandler
 	// ...
 	// ...
 	// ...
@@ -19,6 +20,8 @@ type Handlers struct {
 // Routes ...
 func (app *Application) Routes() http.Handler {
 	mux := http.NewServeMux()
+
+	mux.Handle("/", app.Handlers.Home.index())
 
 	mux.Handle("/users", app.Handlers.User.index())
 	mux.Handle("/user/create", app.Handlers.User.create())
