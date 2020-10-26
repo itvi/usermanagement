@@ -66,7 +66,6 @@ func (h *UserHandler) create() http.HandlerFunc {
 			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 		}
 	}
-	//return fn
 }
 
 func (h *UserHandler) edit() http.HandlerFunc {

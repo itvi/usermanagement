@@ -1,0 +1,25 @@
+{{template "layout" .}}
+
+{{define "body"}}
+<h3>Add</h3>
+<hr>
+<form action="/role/create" method="POST">
+    <div>
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" value="{{.Get "name"}}" maxlength="20" />
+        {{with .Errors.Get "name"}}
+        <span class="invalidate">{{.}}</span>
+        {{end}}
+    </div>
+
+    <div>
+        <label for="desc">Description</label>
+        <input id="desc" name="desc" type="text" value="{{.Get "desc"}}" maxlength="50" />
+        {{with .Errors.Get "desc"}}
+        <span class="invalidate">{{.}}</span>
+        {{end}}
+    </div>
+    <button class="btn btn-primary">save</button>
+</form>
+</div>
+{{end}}

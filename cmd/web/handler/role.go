@@ -66,6 +66,7 @@ func (h *RoleHandler) create() http.HandlerFunc {
 			err = h.M.Create(role)
 			if err != nil {
 				log.Println(err)
+				fmt.Fprintln(w, err)
 				return
 			}
 
@@ -121,6 +122,7 @@ func (h *RoleHandler) edit() http.HandlerFunc {
 			err = h.M.Edit(role)
 			if err != nil {
 				log.Println(err)
+				fmt.Fprintln(w, err)
 				return
 			}
 

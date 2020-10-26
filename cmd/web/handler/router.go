@@ -29,5 +29,9 @@ func (app *Application) Routes() http.Handler {
 	mux.Handle("/user/logout", app.Handlers.User.logout())
 
 	mux.Handle("/roles", app.Handlers.Role.index())
+	mux.Handle("/role/create", app.Handlers.Role.create())
+	mux.Handle("/role/edit/", app.Handlers.Role.edit())
+	mux.Handle("/role/delete/", app.Handlers.Role.delete())
+	mux.Handle("/role/details/", app.Handlers.Role.details())
 	return mux
 }

@@ -1,0 +1,18 @@
+{{template "layout" .}}
+
+{{define "body"}}
+<form method="POST" action="/role/edit/{{.ID}}">
+    <div>
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" value="{{.Name}}" maxlength="20" />
+    </div>
+
+    <div>
+        <label for="name">Description</label>
+        <input id="desc" name="desc" type="text" value="{{.Description}}" maxlength="50" />
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Save" />
+</form>
+</div>
+{{end}}

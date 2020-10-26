@@ -3,5 +3,26 @@
 {{define "body"}}
 <h1>Roles</h1>
 <a href="/role/create">Add</a>
-
+{{ if .}}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    {{range .}}
+    <tr>
+        <td><a href="/role/details/{{.ID}}">{{.ID}}</a></td>
+        <td>{{.Name}}</td>
+        <td>{{.Description}}</td>
+        <td><a href="/role/edit/{{.ID}}">Edit</a></td>
+        <td><a href="/role/delete/{{.ID}}">Delete</a></td>
+    </tr>
+    {{end}}
+</table>
+{{else}}
+<div>No data.</div>
+{{end}}
 {{end}}

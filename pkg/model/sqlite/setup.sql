@@ -10,6 +10,6 @@ CREATE table user(
 
 CREATE TABLE role(
        id integer primary key autoincrement,
-       name varchar(20) NOT NULL,
+       name varchar(20) NOT NULL unique,
        description varchar(50)
 );

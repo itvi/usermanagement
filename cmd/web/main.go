@@ -17,9 +17,13 @@ func main() {
 	}
 	defer db.Close()
 
+	// handle all handlers
 	app := &handler.Application{
 		Handlers: &handler.Handlers{
 			User: &handler.UserHandler{M: &sqlite.UserModel{DB: db}},
+			Role: &handler.RoleHandler{M: &sqlite.RoleModel{DB: db}},
+			// ...
+			// ...
 		},
 	}
 	server := &http.Server{
