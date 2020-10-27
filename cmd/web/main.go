@@ -17,15 +17,24 @@ func main() {
 	}
 	defer db.Close()
 
-	// handle all handlers
+	/*
+		// handle all handlers
+		app := &handler.Application{
+			Handlers: &handler.Handlers{
+				User: &handler.UserHandler{M: &sqlite.UserModel{DB: db}},
+				Role: &handler.RoleHandler{M: &sqlite.RoleModel{DB: db}},
+				// ...
+				// ...
+			},
+		}
+	*/
+
 	app := &handler.Application{
-		Handlers: &handler.Handlers{
-			User: &handler.UserHandler{M: &sqlite.UserModel{DB: db}},
-			Role: &handler.RoleHandler{M: &sqlite.RoleModel{DB: db}},
-			// ...
-			// ...
-		},
+		User: &handler.UserHandler{M: &sqlite.UserModel{DB: db}},
+		Role: &handler.RoleHandler{M: &sqlite.RoleModel{DB: db}},
+		Home: &handler.HomeHandler{},
 	}
+
 	server := &http.Server{
 		Addr:    ":9999",
 		Handler: app.Routes(),
@@ -45,3 +54,5 @@ func openDB(dsn string) (*sql.DB, error) {
 	}
 	return db, nil
 }
+
+// TODO: add user to roles
