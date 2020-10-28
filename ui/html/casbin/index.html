@@ -3,6 +3,31 @@
 {{define "body"}}
 <h3>Policies</h3>
 <a href="/casbin/create">Add</a>
+<hr>
 
+{{$count:=len .CasbinPolicies}}
+
+{{if gt $count 0}}
+<table>
+    <thead>
+        <tr>
+            <th>Sub</th>
+            <th>Obj</th>
+            <th>Act</th>
+        </tr>
+    </thead>
+    {{range .CasbinPolicies}}
+    <tr>
+        <td>{{.Sub}}</td>
+        <td>{{.Obj}}</td>
+        <td>{{.Act}}</td>
+        <td><a href="/casbin/edit/?sub={{.Sub}}&obj={{.Obj}}&act={{.Act}}">Edit</a></td>
+        <td><a href="/casbin/delete/?sub={{.Sub}}&obj={{.Obj}}&act={{.Act}}">Delete</a></td>
+    </tr>
+    {{end}}
+</table>
+{{else}}
+<div>No Data</div>
+{{end}}
 
 {{end}}

@@ -43,9 +43,10 @@ func (app *Application) Routes() http.Handler {
 
 // Application ...
 type Application struct {
-	User *UserHandler
-	Role *RoleHandler
-	Home *HomeHandler
+	User   *UserHandler
+	Role   *RoleHandler
+	Home   *HomeHandler
+	Casbin *MyCasbinHandler
 }
 
 // Routes ...
@@ -67,5 +68,12 @@ func (app *Application) Routes() http.Handler {
 	mux.Handle("/role/edit/", app.Role.edit())
 	mux.Handle("/role/delete/", app.Role.delete())
 	mux.Handle("/role/details/", app.Role.details())
+
+	mux.Handle("/casbin/index/", app.Casbin.index())
+	mux.Handle("/casbin/create", app.Casbin.create())
+	mux.Handle("/casbin/edit/", app.Casbin.edit())
+	mux.Handle("/casbin/delete/", app.Casbin.delete())
+	mux.Handle("/casbin/details/", app.Casbin.details())
+	mux.Handle("/casbin/addr2u/", app.Casbin.addRolesForUser())
 	return mux
 }

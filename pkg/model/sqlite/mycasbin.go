@@ -5,8 +5,8 @@ import (
 	"log"
 	"umanagement/pkg/model"
 
+	sqladapter "github.com/Blank-Xu/sql-adapter"
 	"github.com/casbin/casbin/v2"
-	casbinpgadapter "github.com/cychiuae/casbin-pg-adapter"
 )
 
 // MyCasbinModel ...
@@ -15,19 +15,30 @@ type MyCasbinModel struct {
 }
 
 // InitCasbin initialize casbin
-func (m *MyCasbinModel) InitCasbin() *casbin.SyncedEnforcer {
+func (m *MyCasbinModel) InitCasbin() *casbin.Enforcer {
 	tableName := "casbin"
-	adpt, err := casbinpgadapter.NewAdapter(m.DB, tableName)
+
+	adpt, err := sqladapter.NewAdapter(m.DB, "sqlite3", tableName)
 	if err != nil {
-		log.Println(err)
-		return nil
+		panic(err)
 	}
 
-	enforcer, err := casbin.NewSyncedEnforcer("./cmd/web/auth/perm.conf", adpt)
+	// adpt, err := casbinpgadapter.NewAdapter(m.DB, tableName)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return nil
+	// }
+
+	enforcer, err := casbin.NewEnforcer("./cmd/web/auth/perm.conf", adpt)
 	if err != nil {
-		log.Println(err)
-		return nil
+		panic(err)
 	}
+
+	// enforcer, err := casbin.NewSyncedEnforcer("./cmd/web/auth/perm.conf", adpt)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return nil
+	// }
 	return enforcer
 }
 

@@ -17,3 +17,16 @@ type RoleEditModel struct {
 	Form *form.UserForm
 	Role Role
 }
+
+// CasbinIndexModel ...
+type CasbinIndexModel struct {
+	Role           *Role
+	CasbinPolicies []*CasbinPolicy
+}
+
+// CasbinAddRolesForUserModel ...
+type CasbinAddRolesForUserModel struct {
+	User                 *User
+	Roles                []*Role
+	RolesForSpecificUser []string
+}

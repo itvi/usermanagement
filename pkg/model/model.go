@@ -31,3 +31,8 @@ type Role struct {
 	Name        string
 	Description string
 }
+
+// CasbinPolicy ...
+type CasbinPolicy struct {
+	Sub, Obj, Act string
+}

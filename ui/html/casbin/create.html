@@ -1,0 +1,23 @@
+{{template "layout" .}}
+
+{{define "body"}}
+
+<form action="/casbin/create" method="POST">
+    <div>
+        <label for="sub">Sub</label>
+        <input type="text" name="sub" id="sub" required>
+    </div>
+
+    <div>
+        <label for="obj">Obj</label>
+        <input type="text" name="obj" id="obj" required>
+    </div>
+
+    <div>
+        <label for="act">Act</label>
+        <input type="text" name="act" id="act" required>
+    </div>
+    <button type="submit" id="save">Save</button>
+</form>
+
+{{end}}

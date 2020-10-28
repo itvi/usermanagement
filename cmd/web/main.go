@@ -30,9 +30,10 @@ func main() {
 	*/
 
 	app := &handler.Application{
-		User: &handler.UserHandler{M: &sqlite.UserModel{DB: db}},
-		Role: &handler.RoleHandler{M: &sqlite.RoleModel{DB: db}},
-		Home: &handler.HomeHandler{},
+		User:   &handler.UserHandler{M: &sqlite.UserModel{DB: db}},
+		Role:   &handler.RoleHandler{M: &sqlite.RoleModel{DB: db}},
+		Home:   &handler.HomeHandler{},
+		Casbin: &handler.MyCasbinHandler{M: &sqlite.MyCasbinModel{DB: db}},
 	}
 
 	server := &http.Server{
