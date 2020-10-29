@@ -24,7 +24,7 @@ func (h *RoleHandler) index() http.HandlerFunc {
 			return
 		}
 		log.Println(roles)
-		render(w, r, "./ui/html/role/index.html", roles)
+		render(w, r, "./ui/html/role/index.html", nil, roles)
 	}
 }
 
@@ -41,7 +41,7 @@ func (h *RoleHandler) create() http.HandlerFunc {
 		var page = "./ui/html/role/create.html"
 
 		if r.Method == "GET" {
-			render(w, r, page, form.Init(nil))
+			render(w, r, page, nil, form.Init(nil))
 		} else if r.Method == "POST" {
 			err := r.ParseForm()
 			if err != nil {
@@ -55,7 +55,7 @@ func (h *RoleHandler) create() http.HandlerFunc {
 			form.MaxLength("desc", 50)
 
 			if !form.Valid() {
-				render(w, r, page, form)
+				render(w, r, page, nil, form)
 				return
 			}
 
@@ -94,7 +94,7 @@ func (h *RoleHandler) edit() http.HandlerFunc {
 				log.Println(err)
 				return
 			}
-			render(w, r, page, role)
+			render(w, r, page, nil, role)
 		}
 		if r.Method == "POST" {
 			err := r.ParseForm()
@@ -112,7 +112,7 @@ func (h *RoleHandler) edit() http.HandlerFunc {
 			role := &model.Role{ID: id, Name: name, Description: desc}
 
 			if !form.Valid() {
-				render(w, r, page, &model.RoleEditModel{
+				render(w, r, page, nil, &model.RoleEditModel{
 					Form: form,
 					Role: *role,
 				})

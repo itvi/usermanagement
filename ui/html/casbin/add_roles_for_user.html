@@ -1,0 +1,19 @@
+{{template "layout" .}}
+
+{{define "body"}}
+<h3>Add roles for user</h3>
+<hr>
+<form action="/casbin/addr2u/{{.User.ID}}" method="POST">
+    {{$roles:=.RolesForSpecificUser}}
+    <div>User:{{.User.Name}} [{{.User.SN}}]</div>
+    <h5>Roles:</h5>
+    <div>
+        {{range .Roles}}
+        <input type="checkbox" name="roles" id="{{.Name}}" value="{{.Name}}" {{rolesChecked .Name $roles|safe}}>
+        <label for="{{.Name}}">{{.Name}}</label>
+        {{end}}
+    </div>
+
+    <input type="submit" value="Save">
+</form>
+{{end}}

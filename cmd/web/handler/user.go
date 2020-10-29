@@ -23,7 +23,7 @@ func (h *UserHandler) index() http.HandlerFunc {
 			log.Println(err)
 			return
 		}
-		render(w, r, "./ui/html/user/index.html", users)
+		render(w, r, "./ui/html/user/index.html", nil, users)
 	}
 }
 
@@ -33,7 +33,7 @@ func (h *UserHandler) create() http.HandlerFunc {
 		var page = "./ui/html/user/create.html"
 
 		if r.Method == "GET" {
-			render(w, r, page, form.Init(nil))
+			render(w, r, page, nil, form.Init(nil))
 		} else if r.Method == "POST" {
 			err := r.ParseForm()
 			if err != nil {
@@ -48,7 +48,7 @@ func (h *UserHandler) create() http.HandlerFunc {
 			userForm.MaxLength("name", 6)
 
 			if !userForm.Valid() {
-				render(w, r, page, userForm)
+				render(w, r, page, nil, userForm)
 				return
 			}
 
@@ -56,7 +56,7 @@ func (h *UserHandler) create() http.HandlerFunc {
 				userForm.Get("email"), userForm.Get("password"))
 			if err == model.ErrDuplicate {
 				userForm.Errors.Add("sn", "user already exist")
-				render(w, r, page, userForm)
+				render(w, r, page, nil, userForm)
 				return
 			} else if err != nil {
 				log.Println(err)
@@ -93,7 +93,7 @@ func (h *UserHandler) edit() http.HandlerFunc {
 				Form: userForm,
 				User: *user,
 			}
-			render(w, r, page, &data)
+			render(w, r, page, nil, &data)
 		} else if r.Method == "POST" {
 			err := r.ParseForm()
 			if err != nil {
@@ -115,7 +115,7 @@ func (h *UserHandler) edit() http.HandlerFunc {
 					Form: userForm,
 					User: *user,
 				}
-				render(w, r, page, &data)
+				render(w, r, page, nil, &data)
 				return
 			}
 
@@ -160,7 +160,7 @@ func (h *UserHandler) login() http.HandlerFunc {
 		var page = "./ui/html/user/login.html"
 
 		if r.Method == "GET" {
-			render(w, r, page, form.Init(nil))
+			render(w, r, page, nil, form.Init(nil))
 		} else if r.Method == "POST" {
 			err := r.ParseForm()
 			if err != nil {
@@ -172,7 +172,7 @@ func (h *UserHandler) login() http.HandlerFunc {
 			user, err := h.M.Authenticate(userForm.Get("sn"), userForm.Get("password"))
 			if err == model.ErrInvalidCredentials {
 				userForm.Errors.Add("generic", "User name or password is not correct!")
-				render(w, r, page, userForm)
+				render(w, r, page, nil, userForm)
 				return
 			} else if err != nil {
 				log.Println(err)

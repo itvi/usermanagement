@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
@@ -20,7 +21,7 @@ func (h *MyCasbinHandler) index() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		name := strings.TrimPrefix(r.URL.Path, "/casbin/index/")
 		policies := h.M.GetPoliciesOrderBy(name)
-		render(w, r, "./ui/html/casbin/index.html", &model.CasbinIndexModel{
+		render(w, r, "./ui/html/casbin/index.html", nil, &model.CasbinIndexModel{
 			Role:           &model.Role{Name: name},
 			CasbinPolicies: policies,
 		})
@@ -30,7 +31,7 @@ func (h *MyCasbinHandler) index() http.HandlerFunc {
 func (h *MyCasbinHandler) create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
-			render(w, r, "./ui/html/casbin/create.html", form.Init(nil))
+			render(w, r, "./ui/html/casbin/create.html", nil, form.Init(nil))
 		}
 		if r.Method == "POST" {
 			err := r.ParseForm()
@@ -74,7 +75,7 @@ func (h *MyCasbinHandler) edit() http.HandlerFunc {
 			act := r.URL.Query().Get("act")
 			log.Println(sub, obj, act)
 			policy := &model.CasbinPolicy{Sub: sub, Obj: obj, Act: act}
-			render(w, r, "./ui/html/casbin/edit.html", policy)
+			render(w, r, "./ui/html/casbin/edit.html", nil, policy)
 			//http.Redirect(w, r, "/casbin/policies?sub="+sub+"&obj="+obj+"&act="+act, 303)
 		}
 		if r.Method == "POST" {
@@ -138,7 +139,7 @@ func (h *MyCasbinHandler) details() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		name := strings.TrimPrefix(r.URL.Path, "/casbin/details/")
 		policies := h.M.GetPoliciesOrderBy(name)
-		render(w, r, "./ui/html/casbin/details.html", policies)
+		render(w, r, "./ui/html/casbin/details.html", nil, policies)
 	}
 }
 
@@ -187,7 +188,11 @@ func (h *MyCasbinHandler) addRolesForUser() http.HandlerFunc {
 				log.Println("get roles err:", err)
 			}
 
-			render(w, r, page, &model.CasbinAddRolesForUserModel{
+			funcMap := template.FuncMap{
+				"rolesChecked": rolesChecked,
+				"safe":         safe,
+			}
+			render(w, r, page, funcMap, &model.CasbinAddRolesForUserModel{
 				User:                 user,
 				Roles:                roles,
 				RolesForSpecificUser: rolesForUser,
@@ -201,9 +206,28 @@ func (h *MyCasbinHandler) addRolesForUser() http.HandlerFunc {
 			if err != nil {
 				log.Println("delete user :", err)
 			}
-			_, err = enforcer.AddRolesForUser(user.SN, roles)
+
+			// interface conversion: *sqladapter.Adapter is not persist.BatchAdapter: missing method AddPolicies
+
+			// implement these methods in sqladapter's adapter.go:
+			/*
+				func (p *Adapter) AddPolicies(sec string, ptype string, rules [][]string) error {
+					return nil
+				}
+				func (p *Adapter) RemovePolicies(sec string, ptype string, rule [][]string) error {
+					return nil
+				}
+			*/
+
+			_, err = enforcer.AddRolesForUser(user.SN, roles) // interface conversion: *sqladapter.Adapter is not persist.BatchAdapter: missing method AddPolicies
 			if err != nil {
 				log.Println("add err:',err")
+			}
+
+			// Save the policy back to DB
+			if err = enforcer.SavePolicy(); err != nil {
+				log.Println("Save Policy failed, err:", err)
+				return
 			}
 
 			http.Redirect(w, r, "/casbin/index", http.StatusSeeOther)

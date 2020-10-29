@@ -55,5 +55,3 @@ func openDB(dsn string) (*sql.DB, error) {
 	}
 	return db, nil
 }
-
-// TODO: add user to roles

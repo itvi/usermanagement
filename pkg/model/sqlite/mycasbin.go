@@ -19,26 +19,16 @@ func (m *MyCasbinModel) InitCasbin() *casbin.Enforcer {
 	tableName := "casbin"
 
 	adpt, err := sqladapter.NewAdapter(m.DB, "sqlite3", tableName)
+
 	if err != nil {
 		panic(err)
 	}
-
-	// adpt, err := casbinpgadapter.NewAdapter(m.DB, tableName)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return nil
-	// }
 
 	enforcer, err := casbin.NewEnforcer("./cmd/web/auth/perm.conf", adpt)
 	if err != nil {
 		panic(err)
 	}
 
-	// enforcer, err := casbin.NewSyncedEnforcer("./cmd/web/auth/perm.conf", adpt)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return nil
-	// }
 	return enforcer
 }
 
